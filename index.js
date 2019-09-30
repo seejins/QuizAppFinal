@@ -65,7 +65,7 @@ let questionNum = 0;
 //update question #
 function updateQuestion() {
     questionNum++;
-    $('.questionNum').text(questionNum);
+    $('.questionNum').text(questionNum+1);
 }
 
 //update score
@@ -78,9 +78,10 @@ function updateScore() {
 function startQuiz() {
 
     $('.home').on('click', '.startButton', function(event) {
-        console.log("start!");
         $('.home').hide();
+        $('.status').show();
         $('.questionBox').show();
+        $('.questionNum').text('1');
         $('.questionBox').prepend(handleQuestion(questionNum));
     });
 }
