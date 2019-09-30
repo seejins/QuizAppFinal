@@ -77,56 +77,121 @@ function updateScore() {
 //starts the quiz
 function startQuiz() {
     $('.status').hide();
-    $('.startQuiz').on('click', '.startButton', function(event) {
+    $('.home').on('click', '.startButton', function(event) {
         console.log("start!");
         $('.status').show();
-        $('.startQuiz').hide();
+        $('.home').hide();
         $('.questionBox').show();
-        createQuestion(questionNum);
+        $('.questionBox').prepend(handleQuestion(questionNum));
     });
 }
 
-function createQuestion() {
-    if (questionNum < STORE.length) {
-        return createHTML(questionNum);
-    } else {
-        $('.questionBox').hide();
-        finalScore();
-        $('.questionNumber').text(questionNum);
-    }
-        
+function handleQuestion(num) {
+    $('.questionBox').html(
+        `<form>
+            <fieldset>
+                <legend class="questionText">${STORE[num].question}</legend>
+            </fieldset>
+        </form>`);
+
+    handleChoices(num);
 }
 
-function createHTML(index) {
-    let form = $(`
-        <form>
-            <fieldset>
-                <legend class="questionText">${STORE[index].question}</legend>
+function handleChoices(index) {
+    let field = $('.questionBox').find('fieldset');
 
-                <div class="js-choices"> </div>
-            </fieldset>
-        </form>`)
+    STORE[index].choices.forEach(function (value, answerIndex) {
+        $(`<label class="format" for="${answerIndex}">
+            <input class="radio" type="radio" id="${answerIndex}" value="${value}" name="answer" required>
+            <span>${value}</span>
+        </label>
+        `).appendTo(field);
+    });
+    $(`<button type="submit" class="submitButton button">Submit</button>`).appendTo(field);
 
-    /*for(let i=0; i < STORE[index].choices.length; i++) {
-        $('.js-choices').append(`
-        <input type = "radio" name = "choices" id = "choice${i+1}" 
-        value = "${STORE.choices[i]}" tabindex = "${i+1}">
-        <label for = "choices${i+1}"> ${STORE.choices[i]}</label><br/>
-        `);
-    }
-    */
+}
+
+function submitAnswer() {
+    $('.questionBox').on('submit', function(event) {
+        event.preventDefault();
+        $('.alt').hide();
+        $('.feedback').show();
+        if($('input:checked').val() === STORE[questionNum].answer) {
+            right();
+        } else {
+            wrong();
+        }
+
+    });
+
+}
+
+function right() {
+    $('.feedback').html(
+        `<span>That's right!</span>
+        <button type="button" class="next button">Next</button>`);
+    
+        updateScore();
+        console.log('right');
+}
+
+function wrong() {
+    $('.feedback').html(
+        `<span>Boo.. The right answer is ${STORE[questionNum].answer}</span>
+        <button type="button" class="next button">Next</button>`);
+
+        console.log('wrong');
+}
+
+function handleNext() {
+    $('.questBox').on('click', '.next', function(event) {
+        $('.alt').hide();
+        updateQuestion();
+        console.log(questionNum < STORE.length);    
+        if (questionNum < STORE.length) {
+            $('.questionBox').show();
+            $('.questionBox form').replaceWith(handleQuestion(questionNum));
+        } else {
+            $('.questionNum').text(5);
+            results();
+        }
+    });
 
     
-    return form;
-    
+}
 
+function results() {
+    $('.results').show();
+    console.log('results');
 
+    $('.results').html(
+        `<span>You got ${score} out of 5!</span>
 
+        <button type="submit" class="restart button">Go Again!</button>`);
+}
+
+function restart() {
+    $('.questBox').on('click', '.restart', function(event) {
+        event.preventDefault();
+        resetStats();
+        $('.alt').hide();
+        $('.home').show();
+    });
+}
+
+function resetStats() {
+    score=0;
+    questionNum=0;
+    $('.score').text(0);
+    $('.questionNum').text(0);
 }
 
 
 function handleQuizApp() {
     startQuiz();
+    submitAnswer();
+    handleNext();
+    restart();
 }
 
 $(handleQuizApp);
