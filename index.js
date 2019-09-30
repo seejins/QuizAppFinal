@@ -76,10 +76,9 @@ function updateScore() {
 
 //starts the quiz
 function startQuiz() {
-    $('.status').hide();
+
     $('.home').on('click', '.startButton', function(event) {
         console.log("start!");
-        $('.status').show();
         $('.home').hide();
         $('.questionBox').show();
         $('.questionBox').prepend(handleQuestion(questionNum));
@@ -107,7 +106,7 @@ function handleChoices(index) {
         </label>
         `).appendTo(field);
     });
-    $(`<button type="submit" class="submitButton button">Submit</button>`).appendTo(field);
+    $(`<button type="submit" class="submitButton">Submit</button>`).appendTo(field);
 
 }
 
@@ -128,8 +127,10 @@ function submitAnswer() {
 
 function right() {
     $('.feedback').html(
-        `<span>That's right!</span>
-        <button type="button" class="next button">Next</button>`);
+        `<h3>That's right!</h3>
+        <img src="images/spideyOK.jpg" alt="Spider-Man signaling OK with his fingers" class="image">
+
+        <button type="button" class="next">Next</button>`);
     
         updateScore();
         console.log('right');
@@ -137,8 +138,9 @@ function right() {
 
 function wrong() {
     $('.feedback').html(
-        `<span>Boo.. The right answer is ${STORE[questionNum].answer}</span>
-        <button type="button" class="next button">Next</button>`);
+        `<h3>Boo.. The right answer is ${STORE[questionNum].answer}!!</h3>
+        <img src="images/spiderConfused.jpeg" alt="Spider-Man shrugging in a jail cell" class="image">
+        <button type="button" class="next">Next</button>`);
 
         console.log('wrong');
 }
@@ -162,12 +164,13 @@ function handleNext() {
 
 function results() {
     $('.results').show();
+    $('.status').hide();
     console.log('results');
 
     $('.results').html(
-        `<span>You got ${score} out of 5!</span>
-
-        <button type="submit" class="restart button">Go Again!</button>`);
+        `<h3>You got ${score} out of 5!</h3>
+        <img src="images/wallpaper.jpg" alt="Spider-Man swinging through air" class="image">
+        <button type="submit" class="restart">Go Again!</button>`);
 }
 
 function restart() {
